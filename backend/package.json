@@ -1,0 +1,27 @@
+{
+  "name": "smoothmix-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "spotify",
+    "music",
+    "crossfade",
+    "playlist"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "SmoothMix backend API for Spotify playlist crossfading",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}
