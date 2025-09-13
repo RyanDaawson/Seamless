@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 // Spotify OAuth config
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
@@ -111,6 +111,33 @@ app.get("/auth/callback", async (req, res) => {
     res.json({ access_token, refresh_token, expires_in });
   } catch (err) {
     res.status(400).json({ error: "invalid_token" });
+  }
+});
+
+// GET /me - Fetch Spotify profile info
+app.get("/me", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "unauthorized", message: "Missing or invalid Authorization header" });
+  }
+
+  const token = authHeader.split(" ")[1];
+  try {
+    const response = await axios.get("https://api.spotify.com/v1/me", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    
+    // Return only the relevant profile data
+    const { display_name, email, images } = response.data;
+    res.json({ display_name, email, images });
+  } catch (err) {
+    if (err.response?.status === 401) {
+      return res.status(401).json({ error: "unauthorized", message: "Invalid or expired token" });
+    }
+    console.error("Error fetching Spotify profile:", err.message);
+    res.status(500).json({ error: "internal_error", message: "Failed to fetch profile data" });
   }
 });
 
